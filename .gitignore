@@ -1,0 +1,42 @@
+# ============================================================
+# MedicoAI – .gitignore
+# ============================================================
+
+# Maven
+backend/target/
+backend/*.jar
+backend/*.war
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+
+# Environment files (NEVER commit secrets)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads
+backend/uploads/
+
+# Test reports
+backend/surefire-reports/
+frontend/coverage/

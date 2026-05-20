@@ -1,0 +1,502 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "MedicoAI – Auth Module",
+    "description": "Authentication API tests for MedicoAI Hospital Management System.\n\nBase URL: http://localhost:8080/api\n\nWorkflow:\n1. Run 'Register Patient' (or Admin/Doctor)\n2. Run 'Login' – token is auto-saved to {{authToken}}\n3. All subsequent requests use {{authToken}} automatically",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string",
+      "description": "JWT token – auto-populated by the Login request test script"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Register Admin",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Response has success true', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.be.true;",
+              "});",
+              "",
+              "pm.test('Response contains accessToken', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.data).to.have.property('accessToken');",
+              "    pm.expect(json.data.accessToken).to.be.a('string').and.not.empty;",
+              "});",
+              "",
+              "pm.test('Role is ADMIN', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.data.role).to.eql('ADMIN');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"System Admin\",\n  \"email\": \"admin@medicoai.com\",\n  \"password\": \"Admin@1234\",\n  \"phone\": \"9000000001\",\n  \"role\": \"ADMIN\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "register"]
+        },
+        "description": "Registers a new Admin user.\n\nExpected: 201 Created with JWT token in response body."
+      },
+      "response": [
+        {
+          "name": "201 – Admin Registered",
+          "status": "Created",
+          "code": 201,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": true,\n  \"message\": \"Registration successful\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBtZWRpY29haS5jb20ifQ.signature\",\n    \"tokenType\": \"Bearer\",\n    \"userId\": 1,\n    \"fullName\": \"System Admin\",\n    \"email\": \"admin@medicoai.com\",\n    \"role\": \"ADMIN\",\n    \"message\": \"Registration successful\"\n  },\n  \"timestamp\": \"2024-01-15T10:00:00\"\n}"
+        },
+        {
+          "name": "400 – Email Already Registered",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": false,\n  \"message\": \"Email 'admin@medicoai.com' is already registered.\",\n  \"timestamp\": \"2024-01-15T10:00:00\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "2. Register Doctor",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Response has success true', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.be.true;",
+              "});",
+              "",
+              "pm.test('Role is DOCTOR', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.data.role).to.eql('DOCTOR');",
+              "});",
+              "",
+              "pm.test('accessToken is present', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.data.accessToken).to.be.a('string').and.not.empty;",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Dr. Priya Sharma\",\n  \"email\": \"doctor@medicoai.com\",\n  \"password\": \"Doctor@1234\",\n  \"phone\": \"9000000002\",\n  \"role\": \"DOCTOR\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "register"]
+        },
+        "description": "Registers a new Doctor user.\n\nExpected: 201 Created with JWT token and role DOCTOR."
+      },
+      "response": [
+        {
+          "name": "201 – Doctor Registered",
+          "status": "Created",
+          "code": 201,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": true,\n  \"message\": \"Registration successful\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N0b3JAbWVkaWNvYWkuY29tIn0.signature\",\n    \"tokenType\": \"Bearer\",\n    \"userId\": 2,\n    \"fullName\": \"Dr. Priya Sharma\",\n    \"email\": \"doctor@medicoai.com\",\n    \"role\": \"DOCTOR\",\n    \"message\": \"Registration successful\"\n  },\n  \"timestamp\": \"2024-01-15T10:01:00\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "3. Register Patient",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Response has success true', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.be.true;",
+              "});",
+              "",
+              "pm.test('Role is PATIENT', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.data.role).to.eql('PATIENT');",
+              "});",
+              "",
+              "pm.test('accessToken is present', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.data.accessToken).to.be.a('string').and.not.empty;",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Rahul Verma\",\n  \"email\": \"patient@medicoai.com\",\n  \"password\": \"Patient@1234\",\n  \"phone\": \"9000000003\",\n  \"role\": \"PATIENT\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "register"]
+        },
+        "description": "Registers a new Patient user.\n\nNote: 'role' field is optional – defaults to PATIENT if omitted."
+      },
+      "response": [
+        {
+          "name": "201 – Patient Registered",
+          "status": "Created",
+          "code": 201,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": true,\n  \"message\": \"Registration successful\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXRpZW50QG1lZGljb2FpLmNvbSJ9.signature\",\n    \"tokenType\": \"Bearer\",\n    \"userId\": 3,\n    \"fullName\": \"Rahul Verma\",\n    \"email\": \"patient@medicoai.com\",\n    \"role\": \"PATIENT\",\n    \"message\": \"Registration successful\"\n  },\n  \"timestamp\": \"2024-01-15T10:02:00\"\n}"
+        },
+        {
+          "name": "400 – Validation Error",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"data\": {\n    \"password\": \"Password must contain uppercase, lowercase, digit and special character\",\n    \"email\": \"Please provide a valid email address\"\n  },\n  \"timestamp\": \"2024-01-15T10:02:00\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "4. Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has success true', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.be.true;",
+              "});",
+              "",
+              "pm.test('accessToken is present and saved', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.data.accessToken).to.be.a('string').and.not.empty;",
+              "    // Auto-save token for all subsequent requests",
+              "    pm.collectionVariables.set('authToken', json.data.accessToken);",
+              "    console.log('Token saved:', json.data.accessToken.substring(0, 30) + '...');",
+              "});",
+              "",
+              "pm.test('tokenType is Bearer', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.data.tokenType).to.eql('Bearer');",
+              "});",
+              "",
+              "pm.test('Response contains user info', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.data).to.have.property('userId');",
+              "    pm.expect(json.data).to.have.property('email');",
+              "    pm.expect(json.data).to.have.property('role');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"patient@medicoai.com\",\n  \"password\": \"Patient@1234\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "login"]
+        },
+        "description": "Authenticates a user and returns a JWT Bearer token.\n\nThe test script automatically saves the token to the {{authToken}} collection variable so all subsequent requests use it."
+      },
+      "response": [
+        {
+          "name": "200 – Login Successful",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": true,\n  \"message\": \"Login successful\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYXRpZW50QG1lZGljb2FpLmNvbSIsImlhdCI6MTcwNTMxMjAwMCwiZXhwIjoxNzA1Mzk4NDAwfQ.signature\",\n    \"tokenType\": \"Bearer\",\n    \"userId\": 3,\n    \"fullName\": \"Rahul Verma\",\n    \"email\": \"patient@medicoai.com\",\n    \"role\": \"PATIENT\",\n    \"message\": \"Login successful\"\n  },\n  \"timestamp\": \"2024-01-15T10:03:00\"\n}"
+        },
+        {
+          "name": "401 – Invalid Credentials",
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": false,\n  \"message\": \"Invalid email or password\",\n  \"timestamp\": \"2024-01-15T10:03:00\"\n}"
+        },
+        {
+          "name": "400 – Validation Error (blank fields)",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"data\": {\n    \"email\": \"Email is required\",\n    \"password\": \"Password is required\"\n  },\n  \"timestamp\": \"2024-01-15T10:03:00\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "5. Get Current User Profile",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response has success true', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.be.true;",
+              "});",
+              "",
+              "pm.test('User profile fields are present', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.data).to.have.property('id');",
+              "    pm.expect(json.data).to.have.property('fullName');",
+              "    pm.expect(json.data).to.have.property('email');",
+              "    pm.expect(json.data).to.have.property('role');",
+              "});",
+              "",
+              "pm.test('Authorization header was sent', function () {",
+              "    pm.expect(pm.request.headers.get('Authorization')).to.include('Bearer ');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}",
+            "description": "JWT token auto-filled from Login step"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "me"]
+        },
+        "description": "Returns the profile of the currently authenticated user.\n\nRequires: Bearer token in Authorization header.\nRun 'Login' first to populate {{authToken}}."
+      },
+      "response": [
+        {
+          "name": "200 – Profile Returned",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": true,\n  \"message\": \"User profile fetched\",\n  \"data\": {\n    \"id\": 3,\n    \"fullName\": \"Rahul Verma\",\n    \"email\": \"patient@medicoai.com\",\n    \"phone\": \"9000000003\",\n    \"role\": \"PATIENT\",\n    \"isActive\": true,\n    \"profileImage\": null,\n    \"createdAt\": \"2024-01-15T10:02:00\"\n  },\n  \"timestamp\": \"2024-01-15T10:04:00\"\n}"
+        },
+        {
+          "name": "401 – No Token Provided",
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": false,\n  \"status\": 401,\n  \"message\": \"Unauthorized: Full authentication is required to access this resource\",\n  \"path\": \"/api/users/me\",\n  \"timestamp\": \"2024-01-15T10:04:00\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "6. Test Protected Route (Admin Only)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Response received', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 403]);",
+              "});",
+              "",
+              "if (pm.response.code === 200) {",
+              "    pm.test('Admin access granted – 200 OK', function () {",
+              "        var json = pm.response.json();",
+              "        pm.expect(json.success).to.be.true;",
+              "    });",
+              "} else if (pm.response.code === 403) {",
+              "    pm.test('Non-admin correctly blocked – 403 Forbidden', function () {",
+              "        pm.response.to.have.status(403);",
+              "    });",
+              "} else if (pm.response.code === 401) {",
+              "    pm.test('Unauthenticated request blocked – 401 Unauthorized', function () {",
+              "        pm.response.to.have.status(401);",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}",
+            "description": "Use an ADMIN token to get 200. Use a PATIENT/DOCTOR token to get 403."
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/dashboard",
+          "host": ["{{baseUrl}}"],
+          "path": ["admin", "dashboard"]
+        },
+        "description": "Tests role-based access control on an Admin-only endpoint.\n\n- Login as Admin → expect 200 OK\n- Login as Doctor or Patient → expect 403 Forbidden\n- No token → expect 401 Unauthorized\n\nThis verifies that Spring Security's @PreAuthorize / hasRole('ADMIN') is working correctly."
+      },
+      "response": [
+        {
+          "name": "200 – Admin Access Granted",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": true,\n  \"message\": \"Dashboard data fetched\",\n  \"data\": {\n    \"totalDoctors\": 5,\n    \"totalPatients\": 120,\n    \"totalAppointments\": 340,\n    \"todayAppointments\": 12,\n    \"totalRevenue\": 150000.00\n  },\n  \"timestamp\": \"2024-01-15T10:05:00\"\n}"
+        },
+        {
+          "name": "403 – Access Denied (Non-Admin)",
+          "status": "Forbidden",
+          "code": 403,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": false,\n  \"status\": 403,\n  \"message\": \"Access Denied: You do not have permission to access this resource\",\n  \"path\": \"/api/admin/dashboard\",\n  \"timestamp\": \"2024-01-15T10:05:00\"\n}"
+        },
+        {
+          "name": "401 – Unauthorized (No Token)",
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": false,\n  \"status\": 401,\n  \"message\": \"Unauthorized: Full authentication is required to access this resource\",\n  \"path\": \"/api/admin/dashboard\",\n  \"timestamp\": \"2024-01-15T10:05:00\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Auth Health Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Auth service is running', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.success).to.be.true;",
+              "    pm.expect(json.data).to.eql('OK');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/auth/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "health"]
+        },
+        "description": "Public endpoint – no token required.\nUse this to verify the backend is up before running other tests."
+      },
+      "response": [
+        {
+          "name": "200 – Service Running",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": "{\n  \"success\": true,\n  \"message\": \"Auth service is running\",\n  \"data\": \"OK\",\n  \"timestamp\": \"2024-01-15T10:00:00\"\n}"
+        }
+      ]
+    }
+  ]
+}
