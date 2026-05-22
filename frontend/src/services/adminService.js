@@ -92,6 +92,10 @@ const adminService = {
   getNotifications: ()    => api.get('/notifications'),
   markRead:         (id)  => api.put(`/notifications/${id}/read`),
   markAllRead:      ()    => api.put('/notifications/read-all'),
+
+  // ── Prescriptions (admin view) ─────────────────────────────────────
+  getAllPrescriptions: (params) => api.get('/prescriptions', { params }),
+  deletePrescription:  (id)    => api.delete(`/prescriptions/${id}`),
 }
 
 export default adminService

@@ -7,13 +7,14 @@ import { setNotifications, markAllRead } from '../../context/notificationSlice'
 import './admin.css'
 
 const PAGE_TITLES = {
-  '/admin':               { title: 'Dashboard',     sub: 'Overview & analytics' },
-  '/admin/doctors':       { title: 'Doctors',        sub: 'Manage doctor accounts' },
-  '/admin/patients':      { title: 'Patients',       sub: 'Manage patient records' },
-  '/admin/appointments':  { title: 'Appointments',   sub: 'All appointment records' },
-  '/admin/reports':       { title: 'Reports',        sub: 'Analytics & revenue' },
-  '/admin/notifications': { title: 'Notifications',  sub: 'System alerts' },
-  '/admin/settings':      { title: 'Settings',       sub: 'System configuration' },
+  '/admin':                { title: 'Dashboard',     sub: 'Overview & analytics' },
+  '/admin/doctors':        { title: 'Doctors',        sub: 'Manage doctor accounts' },
+  '/admin/patients':       { title: 'Patients',       sub: 'Manage patient records' },
+  '/admin/appointments':   { title: 'Appointments',   sub: 'All appointment records' },
+  '/admin/prescriptions':  { title: 'Prescriptions',  sub: 'All prescriptions' },
+  '/admin/reports':        { title: 'Reports',        sub: 'Analytics & revenue' },
+  '/admin/notifications':  { title: 'Notifications',  sub: 'System alerts' },
+  '/admin/settings':       { title: 'Settings',       sub: 'System configuration' },
 }
 
 export default function AdminLayout() {

@@ -21,6 +21,7 @@ import AdminAppointments  from './pages/admin/AdminAppointments'
 import AdminReports       from './pages/admin/AdminReports'
 import AdminNotifications from './pages/admin/AdminNotifications'
 import AdminSettings      from './pages/admin/AdminSettings'
+import AdminPrescriptions from './pages/admin/AdminPrescriptions'
 
 // Doctor Pages
 import DoctorDashboard    from './pages/doctor/DoctorDashboard'
@@ -56,6 +57,7 @@ export default function App() {
           <Route path="doctors"       element={<ManageDoctors />} />
           <Route path="patients"      element={<ManagePatients />} />
           <Route path="appointments"  element={<AdminAppointments />} />
+          <Route path="prescriptions" element={<AdminPrescriptions />} />
           <Route path="reports"       element={<AdminReports />} />
           <Route path="notifications" element={<AdminNotifications />} />
           <Route path="settings"      element={<AdminSettings />} />

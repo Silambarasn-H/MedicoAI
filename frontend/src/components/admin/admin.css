@@ -2,6 +2,18 @@
    MedicoAI Admin – Shared Styles
    ============================================================ */
 
+/* ── Admin layout overrides global defaults ── */
+/* When inside .admin-layout, the admin.css dark classes take full precedence */
+.admin-layout,
+.admin-layout * {
+  box-sizing: border-box;
+}
+
+/* Prevent global body background from showing through admin dark layout */
+body:has(.admin-layout) {
+  background-color: #0f172a;
+}
+
 /* ── Layout ── */
 .admin-layout {
   display: flex;
@@ -287,22 +299,22 @@
 .admin-table tbody tr:hover { background: rgba(255,255,255,0.03); }
 .admin-table tbody tr:last-child td { border-bottom: none; }
 
-/* ── Badges ── */
-.badge {
+/* ── Badges — scoped to admin layout ── */
+.admin-layout .badge {
   display: inline-flex; align-items: center; gap: 0.3rem;
   padding: 0.2rem 0.65rem;
   border-radius: 999px;
   font-size: 0.72rem; font-weight: 700;
 }
-.badge-success  { background: rgba(74,222,128,0.12); color: #4ade80; }
-.badge-warning  { background: rgba(251,191,36,0.12); color: #fbbf24; }
-.badge-danger   { background: rgba(248,113,113,0.12); color: #f87171; }
-.badge-info     { background: rgba(56,189,248,0.12);  color: #38bdf8; }
-.badge-purple   { background: rgba(167,139,250,0.12); color: #a78bfa; }
-.badge-gray     { background: rgba(148,163,184,0.12); color: #94a3b8; }
+.admin-layout .badge-success  { background: rgba(74,222,128,0.12); color: #4ade80; }
+.admin-layout .badge-warning  { background: rgba(251,191,36,0.12); color: #fbbf24; }
+.admin-layout .badge-danger   { background: rgba(248,113,113,0.12); color: #f87171; }
+.admin-layout .badge-info     { background: rgba(56,189,248,0.12);  color: #38bdf8; }
+.admin-layout .badge-purple   { background: rgba(167,139,250,0.12); color: #a78bfa; }
+.admin-layout .badge-gray     { background: rgba(148,163,184,0.12); color: #94a3b8; }
 
-/* ── Buttons ── */
-.btn {
+/* ── Buttons — scoped to admin layout to avoid global.css conflict ── */
+.admin-layout .btn {
   display: inline-flex; align-items: center; gap: 0.4rem;
   padding: 0.55rem 1.1rem;
   border-radius: 8px; border: none;
@@ -310,17 +322,17 @@
   cursor: pointer; transition: all 0.15s;
   font-family: inherit;
 }
-.btn-primary { background: #6366f1; color: #fff; }
-.btn-primary:hover { background: #4f46e5; }
-.btn-success { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
-.btn-success:hover { background: rgba(74,222,128,0.25); }
-.btn-danger  { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
-.btn-danger:hover  { background: rgba(248,113,113,0.25); }
-.btn-ghost   { background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid #334155; }
-.btn-ghost:hover   { background: rgba(255,255,255,0.1); color: #e2e8f0; }
-.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.78rem; }
-.btn-icon { padding: 0.45rem; border-radius: 8px; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.admin-layout .btn-primary { background: #6366f1; color: #fff; }
+.admin-layout .btn-primary:hover { background: #4f46e5; }
+.admin-layout .btn-success { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+.admin-layout .btn-success:hover { background: rgba(74,222,128,0.25); }
+.admin-layout .btn-danger  { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+.admin-layout .btn-danger:hover  { background: rgba(248,113,113,0.25); }
+.admin-layout .btn-ghost   { background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid #334155; }
+.admin-layout .btn-ghost:hover   { background: rgba(255,255,255,0.1); color: #e2e8f0; }
+.admin-layout .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.78rem; }
+.admin-layout .btn-icon { padding: 0.45rem; border-radius: 8px; }
+.admin-layout .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ── Form controls ── */
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
