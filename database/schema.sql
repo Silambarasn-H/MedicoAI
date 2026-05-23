@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS users (
   role          ENUM('ADMIN','DOCTOR','PATIENT') NOT NULL DEFAULT 'PATIENT',
   is_active     BOOLEAN             NOT NULL DEFAULT TRUE,
   profile_image VARCHAR(255),
+  reset_token         VARCHAR(255)  UNIQUE,
+  reset_token_expiry  DATETIME,
   created_at    TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at    TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -185,9 +187,18 @@ CREATE INDEX idx_notifications_read     ON notifications(is_read);
 
 -- ============================================================
 -- SEED: Default Admin User
--- Password: Admin@123 (BCrypt encoded)
+-- Password: Admin@123 (BCrypt encoded, strength 12)
+-- Run this only on a fresh database. For existing DBs use the
+-- ALTER statements below to add the new columns.
 -- ============================================================
-INSERT INTO users (full_name, email, password, phone, role, is_active)
+
+-- Add reset token columns if upgrading an existing database
+ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS reset_token        VARCHAR(255) UNIQUE,
+  ADD COLUMN IF NOT EXISTS reset_token_expiry DATETIME;
+
+-- Insert default admin (skip if already exists)
+INSERT IGNORE INTO users (full_name, email, password, phone, role, is_active)
 VALUES (
   'System Admin',
   'admin@medicoai.com',
@@ -196,3 +207,13 @@ VALUES (
   'ADMIN',
   TRUE
 );
+
+-- ============================================================
+-- RESET ADMIN PASSWORD (run this if login fails after password reset work)
+-- This sets admin password back to: Admin@123
+-- ============================================================
+-- UPDATE users
+-- SET password = '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iK2.',
+--     reset_token = NULL,
+--     reset_token_expiry = NULL
+-- WHERE email = 'admin@medicoai.com';

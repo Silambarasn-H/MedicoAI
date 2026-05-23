@@ -93,6 +93,7 @@ public class SecurityConfig {
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .requestMatchers("/doctors/**").hasAnyRole("ADMIN", "DOCTOR")
                     .requestMatchers("/patients/**").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
+                    .requestMatchers("/prescriptions/**").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
                     .anyRequest().authenticated()
             )
 
